@@ -1,0 +1,41 @@
+server:
+  port: 8888
+  servlet:
+    context-path: /
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+spring:
+  application:
+    name: KurumiShell
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.26.24.214:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Midas888
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  admin:
+    id: admin
+    username: admin
+    password: 666666
+    email: admin@admin.com
+  jwtSecret: XimKNNjYZkYmfw2th28zdj6ByeP3bwPa
+  jwtExpirationMs: 86400000  # 24小时
+  cors:
+    allowed-origins:
+      - "http://localhost:5666"
+      - "http://127.0.0.1:5666"
+      - "http://10.26.24.186:5666"

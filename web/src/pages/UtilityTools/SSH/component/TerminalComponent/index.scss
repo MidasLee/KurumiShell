@@ -1,0 +1,18 @@
+.terminal-container {
+    height: 100%;
+    width: 100%;
+    background-color: #1e1e1e;
+    box-sizing: border-box;
+}
+
+.terminal-container :deep(.xterm) {
+    height: 100%;
+}
+
+.terminal-container :deep(.xterm-screen) {
+    width: 100% !important;
+}
+
+.terminal-container :deep(.xterm-viewport) {
+    width: 100% !important;
+}

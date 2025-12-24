@@ -1,0 +1,42 @@
+.statistic-pie-card-div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .head-div {
+        position: relative;
+        width: 100%;
+        height: 50px;
+        border-bottom-width: 1px;
+        border-bottom-color: rgba($color: #000000, $alpha: 0.1);
+        border-bottom-style: solid;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        font-size: 16px;
+        font-weight: bold;
+
+        span {
+            margin-left: 16px;
+        }
+    }
+
+    .content-div {
+        position: relative;
+        width: 100%;
+        height: calc(100% - 50px);
+
+        .chart-div {
+            margin: 16px;
+            position: relative;
+            width: calc(100% - 32px);
+            height: calc(100% - 32px);
+        }
+    }
+
+}

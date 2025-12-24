@@ -1,0 +1,147 @@
+// .ssh-div {
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+//   display: flex;
+//   flex-direction: column;
+
+.ssh-div {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .content-div {
+    flex: 1;
+    padding: 0;
+
+    :deep(.n-split) {
+      height: 100%;
+    }
+
+    :deep(.n-split-pane) {
+      display: flex;
+      flex-direction: column;
+    }
+
+    :deep(.n-split-pane-1) {
+      background: white;
+      border-right: 1px solid #e8e8e8;
+    }
+
+    :deep(.n-split-pane-2) {
+      background: white;
+    }
+
+    .left-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e8e8e8;
+        background: #fafafa;
+
+        h3 {
+          margin: 0;
+          font-size: 14px;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .toolbar {
+          display: flex;
+          align-items: center;
+
+          .n-button {
+            margin-left: 8px;
+          }
+        }
+      }
+
+      .tree-container {
+        flex: 1;
+        padding: 8px 0;
+        overflow-y: auto;
+
+        :deep(.n-tree) {
+          .n-tree-node {
+            padding: 4px 20px;
+
+            &:hover {
+              background: #f0f0f0;
+            }
+
+            &.n-tree-node--selected {
+              background: #e6f7ff;
+            }
+          }
+        }
+      }
+    }
+
+    .right-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .empty-state {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+      }
+
+      .session-tabs {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        :deep(.n-tabs-nav) {
+          margin-bottom: 0;
+        }
+
+        :deep(.n-tab-pane) {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      .session-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+
+        :deep(.n-tabs) {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+
+          .n-tabs-nav {
+            padding: 0 20px;
+            background: #fafafa;
+            border-bottom: 1px solid #e8e8e8;
+          }
+
+          .n-tabs-pane-wrapper {
+            flex: 1;
+            padding: 0;
+          }
+
+          .n-tab-pane {
+            height: 100%;
+            padding: 0;
+          }
+        }
+      }
+    }
+  }
+}

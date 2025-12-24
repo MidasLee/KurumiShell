@@ -1,0 +1,13 @@
+.n-form{
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .n-form-item{
+        position: relative;
+        .v-md-editor{
+            position: relative;
+            height: 100%;
+        }
+    }
+}

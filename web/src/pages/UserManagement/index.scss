@@ -1,0 +1,23 @@
+.user-management-div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .search-div {
+        position: relative;
+        width: calc(100% - 1px);
+        height: 34px;
+        margin-bottom: 16px;
+        .search-button-gi{
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+    }
+
+    .content-div {
+        position: relative;
+        width: 100%;
+        height: calc(100% - 34px - 16px);
+    }
+}

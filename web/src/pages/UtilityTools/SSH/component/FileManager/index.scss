@@ -1,0 +1,29 @@
+.file-manager {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .toolbar {
+        position: relative;
+        padding: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+
+        .current-path {
+            font-size: 14px;
+        }
+    }
+
+    .file-list {
+        position: relative;
+        flex: 1;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+}

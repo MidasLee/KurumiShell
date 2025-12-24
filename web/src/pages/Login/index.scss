@@ -1,0 +1,111 @@
+.login-div {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('/src/assets/images/login-bg.jpg');
+    background-size: cover;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .left-div {
+        position: relative;
+        width: 50%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .n-image {
+            position: relative;
+            width: 60%;
+            height: 60%;
+            -webkit-mask: linear-gradient(to bottom, #000 90%, transparent 100%);
+            mask: linear-gradient(to bottom, #000 90%, transparent 100%);
+        }
+    }
+
+    .right-div {
+        position: relative;
+        width: 50%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .right-content-div {
+            position: relative;
+            width: 500px;
+            height: 100%;
+            background-color: rgba($color: #FFF, $alpha: 0.38);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .login-form-div {
+                position: relative;
+                width: 500px;
+                height: 560px;
+
+                .title-div {
+                    position: relative;
+                    width: 100%;
+                    height: 128px;
+                    display: flex;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    align-items: center;
+
+                    .title-span {
+                        display: flex;
+                        gap: 8px;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 32px;
+
+                        .n-image {
+                            width: 64px;
+                            height: 64px;
+                            -webkit-mask: linear-gradient(to bottom, #000 90%, transparent 100%);
+                            mask: linear-gradient(to bottom, #000 90%, transparent 100%);
+                        }
+                    }
+
+                    .description-span {
+                        color: rgba($color: #000000, $alpha: 0.3)
+                    }
+                }
+
+                .form-div {
+                    position: relative;
+                    width: 100%;
+                    height: calc(100% - 128px);
+
+                    .n-card {
+                        padding-left: 16px;
+                        padding-right: 16px;
+                        background-color: rgba($color: #FFF, $alpha: 0);
+                        border: 0;
+
+                        .n-tabs {
+                            .n-tab-pane {
+                                .n-form {
+                                    :deep(.n-form-item-blank) {
+                                        .n-input {
+                                            background-color: rgba($color: #FFF, $alpha: 0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+    }
+}

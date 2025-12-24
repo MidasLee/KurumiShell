@@ -1,0 +1,70 @@
+.home-div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .n-scrollbar {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        .statistic-div {
+            position: relative;
+            width: 100%;
+            height: 188px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+
+            .item-div {
+                position: relative;
+                width: calc(100% / 4);
+                height: 100%;
+            }
+        }
+
+        .echarts-div {
+            position: relative;
+            width: 100%;
+            height: 425px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+
+            .left-div {
+                position: relative;
+                width: 50%;
+                height: 100%;
+            }
+
+            .right-div {
+                position: relative;
+                width: 50%;
+                height: 100%;
+            }
+        }
+
+        .entry-div {
+            position: relative;
+            width: 100%;
+            height: 425px;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+
+            .left-div {
+                position: relative;
+                width: 50%;
+                height: 100%;
+            }
+
+            .right-div {
+                position: relative;
+                width: 50%;
+                height: 100%;
+            }
+        }
+    }
+}

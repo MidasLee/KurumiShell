@@ -1,0 +1,49 @@
+{
+  "name": "kurumi-shell",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@kangc/v-md-editor": "^2.3.18",
+    "@vue/compiler-sfc": "^3.5.17",
+    "@xterm/xterm": "^5.5.0",
+    "axios": "^1.10.0",
+    "countup.js": "^2.9.0",
+    "echarts": "^5.6.0",
+    "element-resize-detector": "^1.2.4",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.4.1",
+    "prismjs": "^1.30.0",
+    "vue": "^3.3.4",
+    "vue-hooks-plus": "^2.4.0",
+    "vue-router": "4",
+    "xterm-addon-fit": "^0.8.0"
+  },
+  "devDependencies": {
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@types/node": "^24.0.14",
+    "@types/prismjs": "^1.26.5",
+    "@vicons/antd": "^0.13.0",
+    "@vicons/carbon": "^0.13.0",
+    "@vicons/fa": "^0.13.0",
+    "@vicons/fluent": "^0.13.0",
+    "@vicons/ionicons4": "^0.13.0",
+    "@vicons/ionicons5": "^0.13.0",
+    "@vicons/material": "^0.13.0",
+    "@vicons/tabler": "^0.13.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/tsconfig": "^0.7.0",
+    "naive-ui": "^2.42.0",
+    "sass": "^1.89.2",
+    "sass-loader": "^16.0.5",
+    "typescript": "~5.8.3",
+    "vfonts": "^0.0.3",
+    "vite": "^7.0.4",
+    "vue-tsc": "^2.2.12"
+  }
+}

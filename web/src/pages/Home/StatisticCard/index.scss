@@ -1,0 +1,87 @@
+.statistic-card-div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+
+    .head-div {
+        position: relative;
+        padding-top: 16px;
+        padding-left: 16px;
+        padding-right: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .icon-div {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            span {
+                color: rgba($color: #000000, $alpha: 0.5);
+            }
+        }
+    }
+
+    .content-div {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .up-icon-div {
+            font-size: 32px;
+
+            .icon {
+                color: #18A058;
+            }
+        }
+
+        .down-icon-div {
+            font-size: 32px;
+
+            .icon {
+                color: #FF1943;
+            }
+
+        }
+
+        .num-div {
+            font-size: 38px;
+            font-weight: bold;
+        }
+    }
+
+    .foot-div {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-bottom: 16px;
+
+        .arrow-up-icon-div {
+            .icon {
+                color: #18A058;
+            }
+        }
+
+        .arrow-down-icon-div {
+            .icon {
+                color: #FF1943;
+            }
+        }
+
+        .description-div {
+            color: rgba($color: #000000, $alpha: 0.5);
+            font-weight: bold;
+        }
+    }
+}

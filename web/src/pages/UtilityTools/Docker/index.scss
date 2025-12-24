@@ -1,0 +1,185 @@
+.docker-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    :deep(.n-tabs) {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    :deep(.n-tab-pane) {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dudubird-content,
+    .xuanyuan-content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .search-form {
+            position: relative;
+            width: 100%;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .n-input {
+                min-width: 350px;
+            }
+
+            .n-select {
+                min-width: 150px;
+            }
+
+        }
+
+        .search-results {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+
+            :deep(.n-table) {
+                width: 100%;
+                height: 100%;
+
+                :deep(.n-table-body) {
+                    overflow-y: auto;
+                }
+
+                :deep(.n-table-tr) {
+                    &:hover {
+                        background-color: #f5f7fa;
+                    }
+
+                    &.n-table-tr--current {
+                        background-color: #e6f7ff;
+                    }
+                }
+
+                :deep(.n-table-td) {
+                    padding: 12px;
+                    word-break: break-all;
+                }
+
+                :deep(.n-table-th) {
+                    padding: 12px;
+                    background-color: #fafafa;
+                    border-bottom: 1px solid #e8e8e8;
+                    font-weight: 600;
+                    color: #333;
+                }
+            }
+
+            :deep(.n-empty) {
+                padding: 40px 0;
+            }
+        }
+    }
+
+    .loading-container {
+        padding: 20px;
+        text-align: center;
+
+        .loading-bar {
+            height: 4px;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 1) 0%, rgba(37, 99, 235, 1) 100%);
+            animation: loading 1.5s infinite;
+            border-radius: 2px;
+            margin-bottom: 12px;
+        }
+    }
+
+
+}
+
+.image-detail-modal {
+    .image-detail-content {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+
+        :deep(.n-descriptions) {
+            margin-bottom: 16px;
+
+            :deep(.n-descriptions-item-label) {
+                font-weight: 600;
+                color: #333;
+            }
+        }
+
+        .port-tag {
+            background-color: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        h4 {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .code-block {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #e1e4e8;
+
+            pre {
+                margin: 0;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 13px;
+                line-height: 1.5;
+                color: #24292e;
+            }
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+    }
+}
+
+.xuanyuan-image-detail-modal{
+    .xuanyuan-image-detail-content{
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        .code-block {
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #e1e4e8;
+
+            pre {
+                margin: 0;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 13px;
+                line-height: 1.5;
+                color: #24292e;
+            }
+        }
+        .mt-4 {
+            margin-top: 16px;
+        }
+    }
+}
