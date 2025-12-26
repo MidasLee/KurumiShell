@@ -14,7 +14,7 @@ spring:
       max-file-size: -1
       max-request-size: -1
   profiles:
-    active: mysql  # 必须指定: mysql 或 sqlite
+    active: sqlite  # 必须指定: mysql 或 sqlite
 
 # 全局应用配置（不依赖profile）
 app:
@@ -29,7 +29,6 @@ app:
     allowed-origins:
       - "http://localhost:5666"
       - "http://127.0.0.1:5666"
-      - "http://10.26.24.186:5666"
 
 ---
 # MySQL Profile
@@ -39,7 +38,7 @@ spring:
       on-profile: mysql
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.26.24.214:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://127.0.0.1:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
     username: root
     password: Midas888
   jpa:
