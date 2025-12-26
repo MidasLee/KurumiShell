@@ -46,6 +46,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     // Database
 	runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("org.xerial:sqlite-jdbc")
+    runtimeOnly("org.hibernate.orm:hibernate-community-dialects")
     // Jakarta Bean Validation API (Spring Boot 3.x 使用)
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     // https://mvnrepository.com/artifact/com.github.mwiede/jsch

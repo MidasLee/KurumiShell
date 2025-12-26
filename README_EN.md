@@ -21,7 +21,7 @@
 
 ## Project Structure
 
-The KurumiShell project adopts a front-end and back-end separation architecture design, mainly consisting of the following parts:
+The KurumiShell project adopts a front-end and back-end separation architecture design, mainly consisting of following parts:
 
 ```
 KurumiShell/
@@ -129,7 +129,7 @@ yarn dev
 
 4. Access the front-end application:
 
-Open a browser and visit `http://localhost:5666`
+Open your browser and visit `http://localhost:5666`
 
 ### Spider Startup
 
@@ -204,70 +204,256 @@ VITE_APP_XUANYUAN_URL = "http://localhost:8188"
 Back-end configuration files are located in `src/main/resources/application.yml`, with the main configuration items including:
 
 ```yaml
-# Server configuration
 server:
-  port: 8888  # Back-end service port
+  port: 8888
   servlet:
     context-path: /
     encoding:
       force: true
       charset: UTF-8
       enabled: true
-
-# Spring application configuration
 spring:
   application:
     name: KurumiShell
-  # File upload configuration
   servlet:
     multipart:
-      max-file-size: -1  # No limit on single file size
-      max-request-size: -1  # No limit on total request size
-  # Database configuration
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
-    username: root
-    password: Midas888
-  # JPA configuration
-  jpa:
-    hibernate:
-      ddl-auto: update  # Automatically update table structure
-    show-sql: true  # Display SQL statements
-    properties:
-      hibernate:
-        format_sql: true  # Format SQL statements
+      max-file-size: -1
+      max-request-size: -1
+  profiles:
+    active: mysql  # Must specify: mysql or sqlite
 
-# Application custom configuration
+# Global application configuration (profile-independent)
 app:
-  # Administrator user configuration
   admin:
     id: admin
     username: admin
     password: 666666
     email: admin@admin.com
-  # JWT configuration
   jwtSecret: XimKNNjYZkYmfw2th28zdj6ByeP3bwPa
-  jwtExpirationMs: 86400000  # JWT expiration time (milliseconds), default 24 hours
-  # CORS configuration
+  jwtExpirationMs: 86400000  # 24 hours
   cors:
     allowed-origins:
       - "http://localhost:5666"
       - "http://127.0.0.1:5666"
+
+---
+# MySQL Profile
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Midas888
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+---
+# SQLite Profile  
+spring:
+  config:
+    activate:
+      on-profile: sqlite
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./kurumi-shell.db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.community.dialect.SQLiteDialect
 ```
+
+## Database Configuration
+
+This project supports both MySQL and SQLite databases, allowing flexible switching based on environment needs.
+
+### Quick Switching Methods
+
+#### 1. Using MySQL Database
+
+Start the application using the mysql profile:
+```bash
+# Method 1: Command line arguments
+./gradlew bootRun --args='--spring.profiles.active=mysql'
+
+# Method 2: Environment variables
+export SPRING_PROFILES_ACTIVE=mysql
+./gradlew bootRun
+```
+
+#### 2. Using SQLite Database
+
+Start the application using the sqlite profile:
+```bash
+# Method 1: Command line arguments
+./gradlew bootRun --args='--spring.profiles.active=sqlite'
+
+# Method 2: Environment variables
+export SPRING_PROFILES_ACTIVE=sqlite
+./gradlew bootRun
+```
+
+#### 3. Modify Configuration File
+
+Directly modify the default profile in `src/main/resources/application.yml`:
+```yaml
+spring:
+  profiles:
+    active: sqlite  # Change to sqlite or mysql
+```
+
+### Database Configuration Details
+
+#### MySQL Configuration
+```yaml
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.26.24.214:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Midas888
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+```
+
+#### SQLite Configuration
+```yaml
+spring:
+  config:
+    activate:
+      on-profile: sqlite
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./kurumi-shell.db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+```
+
+### Technical Implementation Details
+
+#### DatabaseConfig Configuration Class
+The project dynamically configures database-related parameters through the `DatabaseConfig` class:
+
+```kotlin
+@Configuration
+class DatabaseConfig {
+    @Bean
+    @Profile("sqlite")
+    fun hibernateProperties(): Properties {
+        return Properties().apply {
+            put("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect")
+            put("hibernate.hbm2ddl.auto", "update")
+            put("hibernate.show_sql", "false")
+        }
+    }
+}
+```
+
+#### Dependency Configuration
+SQLite support has been added in `build.gradle.kts`:
+```kotlin
+// SQLite database support
+runtimeOnly("org.xerial:sqlite-jdbc")
+runtimeOnly("org.hibernate.orm:hibernate-community-dialects")
+```
+
+#### Entity Class Compatibility
+All entity classes have been optimized to ensure SQLite compatibility:
+- Removed MySQL-specific COMMENT syntax
+- Used Hibernate automatic type mapping
+- Maintained full compatibility with MySQL
+
+### Deployment Recommendations
+
+#### Production Environment (Recommend MySQL)
+- Use MySQL profile
+- Ensure database server is accessible
+- Configure appropriate connection pool parameters
+
+#### Development/Testing Environment (Optional SQLite)
+- Use SQLite profile
+- Database files will be automatically created in the project root directory
+- No additional database server required
+- Suitable for quick deployment and testing
+
+### Troubleshooting
+
+If you encounter database connection issues:
+
+1. Check the currently active profile:
+   ```bash
+   ps aux | grep java | grep profiles
+   ```
+
+2. View application logs to confirm database type:
+   ```
+   The following 1 profile is active: "sqlite"
+   ```
+
+3. Check database file permissions (SQLite) or network connection (MySQL)
+
+4. Ensure relevant dependencies have been correctly added (build.gradle.kts)
+
+5. **Common Problem Solutions**:
+   - **COMMENT Syntax Error**: If you encounter `near "COMMENT": syntax error`, check if entity classes still have unremoved COMMENT syntax
+   - **Dialect Issues**: Ensure correct Hibernate dialect configuration is used
+   - **Missing Dependencies**: Confirm `sqlite-jdbc` and `hibernate-community-dialects` dependencies have been added
+   - **Table Creation Failure**: Check if entity class annotations are correct and SQLite-unsupported features have been removed
+
+6. **Database File Location**:
+   - SQLite database files are created by default in the project root: `./kurumi-shell.db`
+   - Ensure the application has write permission to this directory
+
+### Important Notes
+
+1. **Data Migration**: MySQL and SQLite data are not interoperable, reinitialize data when switching databases
+2. **JPA Dialect**: Corresponding Hibernate dialects have been automatically configured
+3. **DDL Settings**: Default uses `update` mode, recommend using `validate` in production
+4. **SQLite Limitations**:
+   - SQLite does not support concurrent writes, not suitable for high-concurrency scenarios
+   - Does not support some SQL features (such as certain ALTER TABLE operations)
+   - Does not support COMMENT syntax, solved through entity class optimization
+5. **Entity Class Compatibility**: All entity classes have removed database-specific syntax to ensure cross-database compatibility
 
 ## Development Guide
 
 ### Back-end Development
 
-1. Create a new entity class: Create it in the `src/main/kotlin/per/midas/kurumishell/entity/` directory
+1. Create new entity classes: Create them in the `src/main/kotlin/per/midas/kurumishell/entity/` directory
 2. Create data access layer: Create interfaces in the `src/main/kotlin/per/midas/kurumishell/repository/` directory
 3. Create business logic layer: Create service classes in the `src/main/kotlin/per/midas/kurumishell/service/` directory
-4. Create API controller: Create controllers in the `src/main/kotlin/per/midas/kurumishell/controller/` directory
+4. Create API controllers: Create controllers in the `src/main/kotlin/per/midas/kurumishell/controller/` directory
 
 ### Front-end Development
 
-1. Create a new page: Create Vue components in the `web/src/pages/` directory
+1. Create new pages: Create Vue components in the `web/src/pages/` directory
 2. Create API services: Create API services in the `web/src/pages/{module}/service/` directory
 3. Create components: Create components in the `web/src/pages/{module}/component/` directory
 4. Configure routes: Configure routes in `web/src/router/index.ts`
@@ -279,10 +465,10 @@ app:
 - Safari (latest version)
 - Edge (latest version)
 
-## Notes
+## Important Notes
 
 1. **Security Tips**: In production environment, please ensure to modify the default password and configure appropriate security policies
-2. **Resource Consumption**: SSH terminal and resource monitoring functions will consume a certain amount of server resources, please adjust the configuration according to actual conditions
+2. **Resource Consumption**: SSH terminal and resource monitoring functions will consume a certain amount of server resources; please adjust configuration according to actual conditions
 3. **Network Requirements**: WebSocket functionality requires network environment support
 4. **Database**: Database table structure will be automatically created when starting for the first time
 
@@ -297,22 +483,22 @@ The spider modules (Dudubird spider and Xuanyuan spider) in this project are use
 
 ### Usage Restrictions
 
-1. **Data Usage**: The data obtained by the spiders is for personal learning and research purposes only, and shall not be used for commercial purposes
+1. **Data Usage**: The data obtained by spiders is for personal learning and research purposes only and shall not be used for commercial purposes
 2. **Terms of Use**: When using the spider function, please comply with the terms of use, service agreements, and privacy policies of each third-party website
 3. **Access Frequency**: Do not use the spider function of this project to access third-party websites at high frequency, so as not to cause unnecessary burden on their servers
 
 ### Legal Liability
 
 1. **Data Ownership**: This project does not own, control, or guarantee the accuracy, completeness, timeliness, or availability of any third-party website data
-2. **Intellectual Property Rights**: The intellectual property rights of all image data belong to their respective owners, please comply with relevant copyright and intellectual property laws and regulations when using
+2. **Intellectual Property Rights**: The intellectual property rights of all image data belong to their respective owners; please comply with relevant copyright and intellectual property laws and regulations when using
 3. **Disclaimer**: This project and its developers shall not be responsible for any direct, indirect, incidental, special, or consequential damages arising from the use of the spider function or third-party website data
 4. **Compliance**: Users are responsible for ensuring that their use of the spider function of this project complies with the laws and regulations of their country and region
 
 ### Risk Warnings
 
 1. **Interface Changes**: The interfaces or page structures of third-party websites may change at any time, resulting in the failure of the spider function
-2. **Data Accuracy**: This project does not guarantee the accuracy and completeness of the data obtained by the spiders
-3. **Usage Risks**: Please use the data obtained by the spiders with caution, and this project shall not be responsible for any decisions or actions based on these data
+2. **Data Accuracy**: This project does not guarantee the accuracy and completeness of data obtained by spiders
+3. **Usage Risks**: Please use the data obtained by spiders with caution; this project shall not be responsible for any decisions or actions based on these data
 
 ## Dependencies License Agreements
 
@@ -413,7 +599,7 @@ This project uses various open-source dependency libraries, which follow differe
 
 2. **GNU General Public License v2.0 with Classpath Exception (GPL v2 with Classpath Exception) Dependencies**
    - **MySQL Connector/J**: This project uses MySQL Connector/J as the database driver. According to the Classpath Exception terms, it is allowed to use the driver in applications under any license, as long as the following conditions are met:
-     - The driver interacts with the application only through standard Java API
+     - The driver interacts with the application only through the standard Java API
      - The application code does not directly depend on the internal implementation of the driver
 
 3. **Apache License 2.0 Dependencies**
@@ -456,5 +642,5 @@ This project is licensed under the <a href="./LICENSE">MIT License</a>.
 1. **Highly Free**: Allows anyone to freely use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the software
 2. **Business-friendly**: Unlimited support for commercial use, very suitable for commercial projects
 3. **Concise and Clear**: The agreement text is short and easy to understand, reducing compliance risks
-4. **Promotes Spread**: Loose terms help the project spread and be adopted widely
+4. **Promotes Spread**: Loose terms help the project spread and be widely adopted
 5. **Retains Attribution**: Only requires retention of the original author's copyright notice and license statement, maintaining the author's basic rights

@@ -21,7 +21,7 @@ data class MarkdownFolder(
     var parent: MarkdownFolder? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "VARCHAR(36) COMMENT '所属用户ID'")
+    @JoinColumn(name = "user_id", nullable = false)
     var user: User? = null,
 
     @OneToMany(mappedBy = "parent", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)

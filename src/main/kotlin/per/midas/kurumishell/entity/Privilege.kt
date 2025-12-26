@@ -14,13 +14,12 @@ import jakarta.persistence.Table
 data class Privilege(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "BIGINT COMMENT '主键ID'")
     val id: Long = 0,
 
-    @Column(unique = true, nullable = false, length = 50, columnDefinition = "VARCHAR(50) COMMENT '权限名称'")
+    @Column(unique = true, nullable = false, length = 50)
     var name: String,
 
-    @Column(length = 200, columnDefinition = "VARCHAR(200) COMMENT '权限描述'")
+    @Column(length = 200)
     var description: String? = null,
 
     @ManyToMany(mappedBy = "privileges", fetch = FetchType.LAZY)

@@ -8,26 +8,26 @@ import java.util.UUID
 @Table(name = "ssh_groups", uniqueConstraints = [UniqueConstraint(columnNames = ["name", "user_id"])])
 data class SSHGroup(
     @Id
-    @Column(length = 36, nullable = false, columnDefinition = "VARCHAR(36) COMMENT '主键UUID'")
+    @Column(length = 36, nullable = false)
     var id: String = UUID.randomUUID().toString(),
 
-    @Column(nullable = false, length = 100, columnDefinition = "VARCHAR(100) COMMENT '分组名称'")
+    @Column(nullable = false, length = 100)
     var name: String,
 
-    @Column(length = 500, columnDefinition = "VARCHAR(500) COMMENT '分组描述'")
+    @Column(length = 500)
     var description: String? = null,
 
     @OneToMany(mappedBy = "group", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var connections: MutableList<SSHConnection> = ArrayList(),
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "VARCHAR(36) COMMENT '所属用户ID'")
+    @JoinColumn(name = "user_id", nullable = false)
     var user: User? = null,
 
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP COMMENT '创建时间'")
+    @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Instant = Instant.now(),
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP COMMENT '更新时间'")
+    @Column(name = "updated_at")
     var updatedAt: Instant? = null
 ) {
     @PrePersist

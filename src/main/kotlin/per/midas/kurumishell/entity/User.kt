@@ -21,16 +21,16 @@ import java.util.UUID
 @Table(name = "users")
 data class User(
     @Id
-    @Column(length = 36, columnDefinition = "VARCHAR(36) COMMENT '主键UUID'")
+    @Column(length = 36)
     val id: String = UUID.randomUUID().toString(),
 
-    @Column(unique = false, nullable = false, length = 50, columnDefinition = "VARCHAR(50) COMMENT '用户名'")
+    @Column(unique = false, nullable = false, length = 50)
     var username: String,
 
-    @Column(nullable = false, length = 100, columnDefinition = "VARCHAR(100) COMMENT '密码'")
+    @Column(nullable = false, length = 100)
     var password: String,
 
-    @Column(unique = true, nullable = false, length = 100, columnDefinition = "VARCHAR(100) COMMENT '邮箱'")
+    @Column(unique = true, nullable = false, length = 100)
     var email: String,
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -41,15 +41,15 @@ data class User(
     )
     var roles: MutableSet<Role> = HashSet(),
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN COMMENT '是否启用'")
+    @Column(nullable = false)
     var enabled: Boolean = true,
 
     @CreatedDate
-    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP COMMENT '创建时间'")
+    @Column(name = "created_at", updatable = false)
     var createdAt: Instant = Instant.now(),
 
     @LastModifiedDate
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP COMMENT '更新时间'")
+    @Column(name = "updated_at")
     var updatedAt: Instant = Instant.now(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)

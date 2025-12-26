@@ -204,57 +204,243 @@ VITE_APP_XUANYUAN_URL = "http://localhost:8188"
 后端配置文件位于 `src/main/resources/application.yml` 中，主要配置项包括：
 
 ```yaml
-# 服务器配置
 server:
-  port: 8888  # 后端服务端口
+  port: 8888
   servlet:
     context-path: /
     encoding:
       force: true
       charset: UTF-8
       enabled: true
-
-# Spring应用配置
 spring:
   application:
     name: KurumiShell
-  # 文件上传配置
   servlet:
     multipart:
-      max-file-size: -1  # 不限制单个文件大小
-      max-request-size: -1  # 不限制请求总大小
-  # 数据库配置
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
-    username: root
-    password: Midas888
-  # JPA配置
-  jpa:
-    hibernate:
-      ddl-auto: update  # 自动更新表结构
-    show-sql: true  # 显示SQL语句
-    properties:
-      hibernate:
-        format_sql: true  # 格式化SQL语句
+      max-file-size: -1
+      max-request-size: -1
+  profiles:
+    active: mysql  # 必须指定: mysql 或 sqlite
 
-# 应用自定义配置
+# 全局应用配置（不依赖profile）
 app:
-  # 管理员用户配置
   admin:
     id: admin
     username: admin
     password: 666666
     email: admin@admin.com
-  # JWT配置
   jwtSecret: XimKNNjYZkYmfw2th28zdj6ByeP3bwPa
-  jwtExpirationMs: 86400000  # JWT过期时间（毫秒），默认24小时
-  # CORS配置
+  jwtExpirationMs: 86400000  # 24小时
   cors:
     allowed-origins:
       - "http://localhost:5666"
       - "http://127.0.0.1:5666"
+
+---
+# MySQL Profile
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Midas888
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+---
+# SQLite Profile  
+spring:
+  config:
+    activate:
+      on-profile: sqlite
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./kurumi-shell.db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.community.dialect.SQLiteDialect
 ```
+
+## 数据库配置
+
+本项目支持 MySQL 和 SQLite 两种数据库，可根据环境需要灵活切换。
+
+### 快速切换方式
+
+#### 1. 使用 MySQL 数据库
+
+启动应用时使用 mysql profile：
+```bash
+# 方式1：命令行参数
+./gradlew bootRun --args='--spring.profiles.active=mysql'
+
+# 方式2：环境变量
+export SPRING_PROFILES_ACTIVE=mysql
+./gradlew bootRun
+```
+
+#### 2. 使用 SQLite 数据库
+
+启动应用时使用 sqlite profile：
+```bash
+# 方式1：命令行参数
+./gradlew bootRun --args='--spring.profiles.active=sqlite'
+
+# 方式2：环境变量
+export SPRING_PROFILES_ACTIVE=sqlite
+./gradlew bootRun
+```
+
+#### 3. 修改配置文件
+
+直接修改 `src/main/resources/application.yml` 中的默认 profile：
+```yaml
+spring:
+  profiles:
+    active: sqlite  # 改为 sqlite 或 mysql
+```
+
+### 数据库配置说明
+
+#### MySQL 配置
+```yaml
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://10.26.24.214:3306/kurumi-shell?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Midas888
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+```
+
+#### SQLite 配置
+```yaml
+spring:
+  config:
+    activate:
+      on-profile: sqlite
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite:./kurumi-shell.db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+```
+
+### 技术实现细节
+
+#### DatabaseConfig 配置类
+项目通过 `DatabaseConfig` 类动态配置数据库相关参数：
+
+```kotlin
+@Configuration
+class DatabaseConfig {
+    @Bean
+    @Profile("sqlite")
+    fun hibernateProperties(): Properties {
+        return Properties().apply {
+            put("hibernate.dialect", "org.hibernate.community.dialect.SQLiteDialect")
+            put("hibernate.hbm2ddl.auto", "update")
+            put("hibernate.show_sql", "false")
+        }
+    }
+}
+```
+
+#### 依赖配置
+在 `build.gradle.kts` 中添加了 SQLite 支持：
+```kotlin
+// SQLite 数据库支持
+runtimeOnly("org.xerial:sqlite-jdbc")
+runtimeOnly("org.hibernate.orm:hibernate-community-dialects")
+```
+
+#### 实体类兼容性
+所有实体类都已优化，确保与 SQLite 兼容：
+- 移除了 MySQL 特定的 COMMENT 语法
+- 使用 Hibernate 自动类型映射
+- 保持了与 MySQL 的完全兼容性
+
+### 部署建议
+
+#### 生产环境（推荐 MySQL）
+- 使用 MySQL profile
+- 确保数据库服务器可访问
+- 配置合适的连接池参数
+
+#### 开发/测试环境（可选 SQLite）
+- 使用 SQLite profile
+- 数据库文件会自动创建在项目根目录下
+- 无需额外的数据库服务器
+- 适合快速部署和测试
+
+### 故障排除
+
+如果遇到数据库连接问题：
+
+1. 检查当前激活的 profile：
+   ```bash
+   ps aux | grep java | grep profiles
+   ```
+
+2. 查看应用日志确认数据库类型：
+   ```
+   The following 1 profile is active: "sqlite"
+   ```
+
+3. 检查数据库文件权限（SQLite）或网络连接（MySQL）
+
+4. 确保相关依赖已正确添加（build.gradle.kts）
+
+5. **常见问题解决**：
+   - **COMMENT 语法错误**：如遇到 `near "COMMENT": syntax error`，检查实体类是否还有未移除的 COMMENT 语法
+   - **方言问题**：确保使用了正确的 Hibernate 方言配置
+   - **依赖缺失**：确认 `sqlite-jdbc` 和 `hibernate-community-dialects` 依赖已添加
+   - **表创建失败**：检查实体类注解是否正确，SQLite 不支持的特性是否已移除
+
+6. **数据库文件位置**：
+   - SQLite 数据库文件默认创建在项目根目录：`./kurumi-shell.db`
+   - 确保应用有写入该目录的权限
+
+### 注意事项
+
+1. **数据迁移**：MySQL 和 SQLite 的数据不互通，切换数据库时需要重新初始化数据
+2. **JPA方言**：已自动配置对应的 Hibernate 方言
+3. **DDL设置**：默认使用 `update` 模式，生产环境建议使用 `validate`
+4. **SQLite限制**：
+   - SQLite 不支持并发写入，不适合高并发场景
+   - 不支持部分 SQL 特性（如某些 ALTER TABLE 操作）
+   - 不支持 COMMENT 语法，已通过实体类优化解决
+5. **实体类兼容**：所有实体类已移除数据库特定语法，确保跨数据库兼容
 
 ## 开发指南
 

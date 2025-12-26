@@ -13,12 +13,19 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: Number(env.VITE_APP_PORT),
       strictPort: true,
-      open: true
+      open: false
     },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
       },
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
     }
   }
 })

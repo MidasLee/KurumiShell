@@ -33,7 +33,7 @@ data class MarkdownNote(
     var folder: MarkdownFolder? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false, columnDefinition = "VARCHAR(36) COMMENT '所属用户ID'")
+    @JoinColumn(name = "user_id", nullable = false)
     var user: User? = null
 ) {
     @PreUpdate
