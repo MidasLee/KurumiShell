@@ -8,6 +8,8 @@ import { register } from '@/pages/Login/service/register.ts'
 import type { LoginDTO } from '@/pages/Login/dto/LoginDTO.ts'
 import type { RegisterDTO } from '@/pages/Login/dto/RegisterDTO.ts'
 import useUserStore from '@/store/modules/useUserStore.ts'
+import kurumiShellImg from '@/assets/images/kurumi-shell.png'
+import kurumiImg from '@/assets/images/kurumi.png'
 
 const router = useRouter()
 
@@ -157,14 +159,14 @@ const handleEnterKey = (e: KeyboardEvent) => {
 <template>
     <div class="login-div">
         <div class="left-div">
-            <n-image preview-disabled src="/src/assets/images/kurumi-shell.png" />
+            <n-image preview-disabled :src="kurumiShellImg" />
         </div>
         <div class="right-div">
             <div class="right-content-div">
                 <div class="login-form-div">
                     <div class="title-div">
                         <span class="title-span">
-                            <n-image preview-disabled src="/src/assets/images/kurumi.png" />
+                            <n-image preview-disabled :src="kurumiImg" />
                             KurumiShell
                         </span>
                         <span class="description-span">

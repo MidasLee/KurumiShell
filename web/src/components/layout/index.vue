@@ -29,6 +29,8 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined
 } from '@vicons/antd'
+import kurumiShellImg from '@/assets/images/kurumi-shell.png'
+import kurumiImg from '@/assets/images/kurumi.png'
 
 const router = useRouter()
 const route = useRoute()
@@ -304,7 +306,7 @@ const breadcrumbItemClickHandler = (path: string) => {
             <n-layout-sider :collapsed="collapsed" show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
                 :native-scrollbar="false" @collapse="collapsed = true" @expand="collapsed = false">
                 <div class="title-div">
-                    <n-image preview-disabled src="/src/assets/images/kurumi.png" />
+                    <n-image preview-disabled :src="kurumiShellImg" />
                     <div class="title-text-div" v-if="collapsed === false">
                         <h2>KurumiShell</h2>
                     </div>
@@ -353,7 +355,7 @@ const breadcrumbItemClickHandler = (path: string) => {
                                 </template>
                             </n-button>
                             <n-dropdown :options="avatarDropdownOptions">
-                                <n-avatar round :size="34" src="/src/assets/images/kurumi.png" />
+                                <n-avatar round :size="34" :src="kurumiImg" />
                             </n-dropdown>
                         </div>
                     </div>
