@@ -167,7 +167,7 @@ defineExpose({
                     <n-input v-model:value="form.username" />
                 </n-form-item>
                 <n-form-item label="密码" path="password">
-                    <n-input v-model:value="form.password" />
+                    <n-input v-model:value="form.password" type="password" />
                 </n-form-item>
                 <n-form-item label="私钥" path="privateKey">
                     <n-input v-model:value="form.privateKey" />
