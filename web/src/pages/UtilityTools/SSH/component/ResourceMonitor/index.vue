@@ -4,6 +4,7 @@ import { TimeOutline, DesktopOutline, GlobeOutline } from '@vicons/ionicons5'
 import { NProgress, NSpin, NEmpty, NIcon, NGrid, NGi, NCard } from 'naive-ui'
 import { getEnv } from '@/utils/env.ts'
 import type { DiskMount, NetworkInterface } from '@/dto/ServerResource.ts'
+import { buildWsUrl } from '@/utils/env.ts'
 
 const env = getEnv()
 
@@ -75,8 +76,6 @@ const connectWebSocket = () => {
     return
   }
 
-  // loading.value = true
-
   // 关闭现有连接
   if (webSocket.value) {
     try {
@@ -86,9 +85,8 @@ const connectWebSocket = () => {
     }
   }
 
-
   // 创建新连接
-  const wsUrl = `ws://${env.apiUrl.replace('http://', '')}/api/ssh/resources?connectionId=${props.connectionId}`
+  const wsUrl = buildWsUrl('resources', props.connectionId)
 
   try {
     webSocket.value = new WebSocket(wsUrl)
@@ -138,7 +136,7 @@ const updateResourceData = (data: any) => {
   diskUsed.value = Number(data.diskUsed) || 0
   uptime.value = Number(data.uptime) || 0
   timestamp.value = data.timestamp ? new Date(data.timestamp) : new Date()
-  
+
   // 更新系统信息
   hostname.value = data.hostname || ''
   ipAddress.value = data.ipAddress || ''
@@ -146,33 +144,33 @@ const updateResourceData = (data: any) => {
   osVersion.value = data.osVersion || ''
   kernelVersion.value = data.kernelVersion || ''
   architecture.value = data.architecture || ''
-  
+
   // 更新CPU信息
   cpuModel.value = data.cpuModel || ''
   cpuCores.value = Number(data.cpuCores) || 0
   cpuThreads.value = Number(data.cpuThreads) || 0
   cpuFrequency.value = data.cpuFrequency || ''
-  
+
   // 更新磁盘挂载点
   diskMounts.value = data.diskMounts || []
-  
+
   // 更新网络接口
   networkInterfaces.value = data.networkInterfaces || []
-  
+
   // 更新系统负载
   loadAvg1m.value = Number(data.loadAvg1m) || 0
   loadAvg5m.value = Number(data.loadAvg5m) || 0
   loadAvg15m.value = Number(data.loadAvg15m) || 0
-  
+
   // 更新进程信息
   totalProcesses.value = Number(data.totalProcesses) || 0
   runningProcesses.value = Number(data.runningProcesses) || 0
-  
+
   // 更新交换空间
   swapTotal.value = Number(data.swapTotal) || 0
   swapUsed.value = Number(data.swapUsed) || 0
   swapUsage.value = Number(data.swapUsage) || 0
-  
+
   // 更新系统时间
   systemTime.value = data.systemTime || ''
 }
@@ -291,7 +289,7 @@ onUnmounted(() => {
             </div>
           </n-card>
         </n-gi>
-        
+
         <n-gi>
           <n-card title="CPU信息" size="small">
             <div class="info-list">
@@ -312,8 +310,8 @@ onUnmounted(() => {
                 <span class="info-value">{{ cpuUsage.toFixed(1) }}%</span>
               </div>
               <div class="progress-item">
-                <n-progress :percentage="cpuUsage" :indicator-placement="'inside'" 
-                            :color="getProgressColor(cpuUsage)" :height="6" />
+                <n-progress :percentage="cpuUsage" :indicator-placement="'inside'" :color="getProgressColor(cpuUsage)"
+                  :height="6" />
               </div>
             </div>
           </n-card>
@@ -330,8 +328,8 @@ onUnmounted(() => {
                 <span class="info-value">{{ memoryUsage.toFixed(1) }}%</span>
               </div>
               <div class="progress-item">
-                <n-progress :percentage="memoryUsage" :indicator-placement="'inside'" 
-                            :color="getProgressColor(memoryUsage)" :height="6" />
+                <n-progress :percentage="memoryUsage" :indicator-placement="'inside'"
+                  :color="getProgressColor(memoryUsage)" :height="6" />
               </div>
               <div class="info-item">
                 <span class="info-label">已使用:</span>
@@ -344,7 +342,7 @@ onUnmounted(() => {
             </div>
           </n-card>
         </n-gi>
-        
+
         <n-gi>
           <n-card title="交换空间" size="small">
             <div class="info-list">
@@ -353,8 +351,8 @@ onUnmounted(() => {
                 <span class="info-value">{{ swapUsage.toFixed(1) }}%</span>
               </div>
               <div class="progress-item">
-                <n-progress :percentage="swapUsage" :indicator-placement="'inside'" 
-                            :color="getProgressColor(swapUsage)" :height="6" />
+                <n-progress :percentage="swapUsage" :indicator-placement="'inside'" :color="getProgressColor(swapUsage)"
+                  :height="6" />
               </div>
               <div class="info-item">
                 <span class="info-label">已使用:</span>
@@ -389,7 +387,7 @@ onUnmounted(() => {
             </div>
           </n-card>
         </n-gi>
-        
+
         <n-gi>
           <n-card title="进程信息" size="small">
             <div class="info-list">
@@ -414,10 +412,11 @@ onUnmounted(() => {
               <span class="mount-point">{{ mount.mountPoint }}</span>
               <span class="mount-usage">{{ mount.usage.toFixed(1) }}%</span>
             </div>
-            <n-progress :percentage="mount.usage" :indicator-placement="'inside'" 
-                        :color="getProgressColor(mount.usage)" :height="6" />
+            <n-progress :percentage="mount.usage" :indicator-placement="'inside'" :color="getProgressColor(mount.usage)"
+              :height="6" />
             <div class="mount-details">
-              <small>{{ formatBytes(mount.used) }} / {{ formatBytes(mount.size) }} ({{ formatBytes(mount.available) }} 可用)</small>
+              <small>{{ formatBytes(mount.used) }} / {{ formatBytes(mount.size) }} ({{ formatBytes(mount.available) }}
+                可用)</small>
               <small>文件系统: {{ mount.filesystem }}</small>
             </div>
           </div>

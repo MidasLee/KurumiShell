@@ -4,6 +4,7 @@ import { Terminal } from '@xterm/xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import '@xterm/xterm/css/xterm.css'
 import { getEnv } from '@/utils/env'
+import { buildWsUrl } from '@/utils/env.ts'
 
 const env = getEnv()
 
@@ -39,7 +40,7 @@ const terminalState = ref<{
 // 保存终端状态
 const saveTerminalState = () => {
     if (!terminal.value) return
-    
+
     try {
         const buffer = terminal.value.buffer.active
         let content = ''
@@ -52,7 +53,7 @@ const saveTerminalState = () => {
         terminalState.value.buffer = content
         terminalState.value.cursorX = terminal.value.buffer.active.cursorX
         terminalState.value.cursorY = terminal.value.buffer.active.cursorY
-        
+
         console.debug(`终端 ${props.name} 状态已保存`)
     } catch (error) {
         console.warn('保存终端状态失败:', error)
@@ -62,7 +63,7 @@ const saveTerminalState = () => {
 // 恢复终端状态
 const restoreTerminalState = () => {
     if (!terminal.value || !terminalState.value.buffer) return
-    
+
     try {
         terminal.value.write('\r\n')
         terminal.value.write(terminalState.value.buffer)
@@ -76,10 +77,10 @@ const restoreTerminalState = () => {
 const safeDispose = () => {
     try {
         console.debug(`安全清理终端 ${props.name} 资源`)
-        
+
         // 保存状态
         saveTerminalState()
-        
+
         // 关闭WebSocket连接
         if (webSocket.value) {
             try {
@@ -108,7 +109,7 @@ const safeDispose = () => {
                 terminal.value = null
             }
         }
-        
+
         isInitialized.value = false
         console.debug(`终端 ${props.name} 资源清理完成`)
     } catch (error) {
@@ -122,13 +123,13 @@ const connectWebSocket = () => {
         console.debug(`终端 ${props.name} 无连接ID，跳过WebSocket连接`)
         return
     }
-    
+
     // 如果已有活跃连接，不再创建新连接
     if (webSocket.value && webSocket.value.readyState === WebSocket.OPEN) {
         console.debug(`终端 ${props.name} 已有活跃连接，跳过重新连接`)
         return
     }
-    
+
     // 清理旧连接
     if (webSocket.value) {
         try {
@@ -138,17 +139,17 @@ const connectWebSocket = () => {
         }
         webSocket.value = null
     }
-    
-    const wsUrl = `ws://${env.apiUrl.replace('http://', '')}/api/ssh/terminal?connectionId=${props.connectionId}`
-    
+
+    const wsUrl = buildWsUrl('terminal', props.connectionId)
+
     try {
-        console.debug(`终端 ${props.name} 创建WebSocket连接: ${wsUrl}`)
+
         webSocket.value = new WebSocket(wsUrl)
-        
+
         webSocket.value.onopen = () => {
             isConnected.value = true
             console.debug(`终端 ${props.name} WebSocket连接成功`)
-            
+
             // 发送终端尺寸
             if (terminal.value) {
                 const resizeMsg = JSON.stringify({
@@ -158,13 +159,13 @@ const connectWebSocket = () => {
                 })
                 webSocket.value?.send(resizeMsg)
             }
-            
+
             // 只在没有保存状态时显示连接消息
             if (!terminalState.value.buffer) {
                 terminal.value?.writeln('\r\n✅ SSH连接已建立')
             }
         }
-        
+
         webSocket.value.onmessage = (event) => {
             if (terminal.value && isConnected.value) {
                 try {
@@ -174,12 +175,12 @@ const connectWebSocket = () => {
                 }
             }
         }
-        
+
         webSocket.value.onclose = () => {
             console.debug(`终端 ${props.name} WebSocket连接关闭`)
             isConnected.value = false
         }
-        
+
         webSocket.value.onerror = (error) => {
             console.error(`终端 ${props.name} WebSocket错误:`, error)
             isConnected.value = false
@@ -200,25 +201,25 @@ const initTerminal = () => {
         // 如果终端已初始化，只重新附加到DOM
         if (isInitialized.value && terminal.value) {
             console.debug(`终端 ${props.name} 已初始化，重新附加到DOM`)
-            
+
             // 检查是否已附加到正确容器
             if (terminal.value.element?.parentElement !== containerRef.value) {
                 terminal.value.open(containerRef.value)
                 restoreTerminalState()
             }
-            
+
             // 调整大小
             resizeTerminal()
             return
         }
-        
+
         // 创建新的终端实例
         console.debug(`创建新的终端实例: ${props.name}`)
-        
+
         terminal.value = new Terminal({
             cursorBlink: true,
-            theme: { 
-                background: '#1e1e1e', 
+            theme: {
+                background: '#1e1e1e',
                 foreground: '#f0f0f0',
                 cursor: '#ffffff'
             },
@@ -231,7 +232,7 @@ const initTerminal = () => {
         terminal.value.loadAddon(fitAddon.value)
 
         terminal.value.open(containerRef.value)
-        
+
         // 恢复之前的状态或显示初始内容
         if (terminalState.value.buffer) {
             restoreTerminalState()
@@ -241,7 +242,7 @@ const initTerminal = () => {
             terminal.value.writeln('本地终端')
             terminal.value.write('$ ')
         }
-        
+
         // 处理用户输入
         terminal.value.onData((data: string) => {
             if (props.connectionId && isConnected.value && webSocket.value) {
@@ -252,7 +253,7 @@ const initTerminal = () => {
         })
 
         isInitialized.value = true
-        
+
         // 初始化WebSocket连接
         if (props.connectionId) {
             connectWebSocket()
@@ -271,7 +272,7 @@ const resizeTerminal = () => {
     if (fitAddon.value && containerRef.value) {
         try {
             fitAddon.value.fit()
-            
+
             // 发送调整大小的消息
             if (isConnected.value && webSocket.value && terminal.value) {
                 const resizeMsg = JSON.stringify({
@@ -290,7 +291,7 @@ const resizeTerminal = () => {
 // 监听可见性变化
 watch(() => props.visible, (visible) => {
     console.debug(`终端 ${props.name} 可见性: ${visible}`)
-    
+
     if (visible) {
         nextTick(() => {
             setTimeout(() => {
@@ -307,17 +308,17 @@ watch(() => props.visible, (visible) => {
 watch(() => props.connectionId, (newId, oldId) => {
     if (newId !== oldId) {
         console.debug(`终端 ${props.name} 连接ID变化: ${oldId} -> ${newId}`)
-        
+
         // 保存当前状态
         saveTerminalState()
-        
+
         // 关闭旧连接
         if (webSocket.value) {
             webSocket.value.close()
             webSocket.value = null
             isConnected.value = false
         }
-        
+
         // 重置终端显示新连接
         if (terminal.value && isInitialized.value) {
             terminal.value.reset()
